@@ -4,7 +4,7 @@ import '../../../../core/responsiveness/app_responsive.dart';
 class TopMixesWg extends StatelessWidget {
   final String image;
   final String title;
-  final Color borderColor;
+  final String borderColor;
 
   const TopMixesWg({
     super.key,
@@ -20,8 +20,10 @@ class TopMixesWg extends StatelessWidget {
       width: appW(150),
       margin: EdgeInsets.only(right: appW(12)),
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
-        border: Border(bottom: BorderSide(color: borderColor, width: 10)),
+        image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
+        border: Border(
+          bottom: BorderSide(color: _parseColor(borderColor), width: 10),
+        ),
       ),
       alignment: Alignment.topLeft,
       child: Padding(
@@ -36,5 +38,12 @@ class TopMixesWg extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Color _parseColor(String hexColor) {
+    final buffer = StringBuffer();
+    if (hexColor.length == 6) buffer.write('FF');
+    buffer.write(hexColor.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
   }
 }

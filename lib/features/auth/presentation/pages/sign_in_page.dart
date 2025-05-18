@@ -5,15 +5,19 @@ import 'package:iconly/iconly.dart';
 import 'package:musium/features/auth/presentation/bloc/auth_event.dart';
 import 'package:musium/features/auth/presentation/bloc/log_in/log_in_bloc.dart';
 import 'package:musium/features/auth/presentation/bloc/log_in/log_in_state.dart';
+import 'package:musium/features/auth/presentation/pages/auth_page.dart';
 import 'package:musium/features/auth/presentation/pages/sign_up_page.dart';
 import '../../../../core/common/colors/app_colors.dart';
 import '../../../../core/common/sizes/sizes.dart';
 import '../../../../core/common/widgets/action_app_bar_wg.dart';
 import '../../../../core/common/widgets/custom_text_field_wg.dart';
 import '../../../../core/common/widgets/default_button_wg.dart';
+import '../../../../core/di/service_locator.dart';
 import '../../../../core/responsiveness/app_responsive.dart';
 import '../../../../core/route/rout_generator.dart';
+import '../../../../core/utils/logger.dart';
 import '../../../main_page.dart';
+import '../../data/data_sources/local/auth_local_data_source.dart';
 import '../widgets/auth_or_continue_with_wg.dart';
 import '../widgets/auth_sign_in_up_choice_wg.dart';
 
@@ -32,6 +36,8 @@ class _SignInPageState extends State<SignInPage> {
   bool _isFocusedEmail = false;
   bool _isFocusedPassword = false;
   bool _obscureText = true;
+  final authLocalDataSource = sl<AuthLocalDataSource>();
+
 
   @override
   void initState() {
@@ -47,6 +53,16 @@ class _SignInPageState extends State<SignInPage> {
       setState(() {
         _isFocusedEmail = _emailFocusNode.hasFocus;
       });
+    });
+  }
+  void saveRememberMe(String email, String password) {
+    authLocalDataSource
+        .saveRememberMe(email, password)
+        .then((_) {
+      LoggerService.info("Remember Me saved : $email - $password");
+    })
+        .catchError((error) {
+      LoggerService.error("Error saving Remember Me: $error");
     });
   }
 
@@ -84,7 +100,7 @@ class _SignInPageState extends State<SignInPage> {
       backgroundColor: AppColors.background,
       appBar: ActionAppBarWg(
         onBackPressed: () {
-          AppRoute.close();
+          AppRoute.go(AuthPage());
         },
       ),
       body: SingleChildScrollView(
@@ -152,6 +168,10 @@ class _SignInPageState extends State<SignInPage> {
                   BlocConsumer<LoginUserBloc, LoginUserState>(
                     listener: (context, state) {
                       if (state is LoginUserSuccess) {
+                        saveRememberMe(
+                          _emailController.text,
+                          _passwordController.text,
+                        );
                         AppRoute.go(MainPage());
                       } else if (state is LoginUserError) {
                         ScaffoldMessenger.of(context).showSnackBar(

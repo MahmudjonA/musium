@@ -22,7 +22,7 @@ class _AuthPageState extends State<AuthPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Column(
-          spacing: appH(24),
+          spacing: appH(14),
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -80,14 +80,14 @@ class _AuthPageState extends State<AuthPage> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(width: 10),
+                 SizedBox(width: appW(10)),
                 Container(width: appW(170), height: 1, color: AppColors.white),
               ],
             ),
             DefaultButtonWg(
               title: "Log in with a password",
               onPressed: () {
-                AppRoute.go(SignInPage());
+                AppRoute.open(SignInPage());
               },
             ),
           ],

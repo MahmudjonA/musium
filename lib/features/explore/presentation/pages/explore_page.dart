@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 import 'package:musium/core/common/colors/app_colors.dart';
 import 'package:musium/core/responsiveness/app_responsive.dart';
-import 'package:musium/features/home/presentation/widgets/decoration_container.dart';
+import 'package:musium/features/explore/presentation/widgets/decoration_container.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -64,11 +64,16 @@ class _ExplorePageState extends State<ExplorePage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: AppColors.background,
         elevation: 0,
         title: Row(
           children: [
-            Image.asset('assets/images/logo.jpg', width: 50, height: 50),
+            Image.asset(
+              'assets/images/logo.jpg',
+              width: appW(50),
+              height: appH(50),
+            ),
             SizedBox(width: appW(15)),
             Text(
               'Search',
@@ -82,7 +87,11 @@ class _ExplorePageState extends State<ExplorePage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+        padding: EdgeInsets.only(
+          top: appH(20),
+          left: appW(20),
+          right: appW(20),
+        ),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,13 +101,21 @@ class _ExplorePageState extends State<ExplorePage> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: AppColors.containerColor,
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(appW(25)),
                 ),
                 child: TextField(
+                  style: TextStyle(color: AppColors.white),
                   decoration: InputDecoration(
-                    prefixIcon: Icon(IconlyLight.search, color: AppColors.grey),
+                    prefixIcon: Icon(
+                      IconlyLight.search,
+                      color: AppColors.grey,
+                      size: appH(25),
+                    ),
                     hintText: 'Search for music, artists, albums...',
-                    hintStyle: TextStyle(color: AppColors.grey),
+                    hintStyle: TextStyle(
+                      color: AppColors.grey,
+                      fontSize: appH(20),
+                    ),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: appW(15),

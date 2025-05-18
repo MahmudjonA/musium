@@ -10,9 +10,12 @@ import '../../../../core/common/sizes/sizes.dart';
 import '../../../../core/common/widgets/action_app_bar_wg.dart';
 import '../../../../core/common/widgets/custom_text_field_wg.dart';
 import '../../../../core/common/widgets/default_button_wg.dart';
+import '../../../../core/di/service_locator.dart';
 import '../../../../core/responsiveness/app_responsive.dart';
 import '../../../../core/route/rout_generator.dart';
+import '../../../../core/utils/logger.dart';
 import '../../../main_page.dart';
+import '../../data/data_sources/local/auth_local_data_source.dart';
 import '../widgets/auth_or_continue_with_wg.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -30,6 +33,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _isFocusedEmail = false;
   bool _isFocusedPassword = false;
   bool _obscureText = true;
+  final authLocalDataSource = sl<AuthLocalDataSource>();
 
   @override
   void initState() {
@@ -74,6 +78,17 @@ class _SignUpPageState extends State<SignUpPage> {
     _emailFocusNode.dispose();
     _emailController.dispose();
     super.dispose();
+  }
+
+  void saveRememberMe(String email, String password) {
+    authLocalDataSource
+        .saveRememberMe(email, password)
+        .then((_) {
+          LoggerService.info("Remember Me saved : $email - $password");
+        })
+        .catchError((error) {
+          LoggerService.error("Error saving Remember Me: $error");
+        });
   }
 
   @override
@@ -150,6 +165,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   BlocConsumer<RegisterUserBloc, RegisterUserState>(
                     listener: (context, state) {
                       if (state is RegisterUserSuccess) {
+                        saveRememberMe(
+                          _emailController.text,
+                          _passwordController.text,
+                        );
                         AppRoute.go(MainPage());
                       } else if (state is RegisterUserError) {
                         ScaffoldMessenger.of(context).showSnackBar(
